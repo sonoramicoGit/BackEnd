@@ -8,13 +8,28 @@ const { generarJWT } = require('../../utils/jwt');
 // Obtiene una lista de usuarios
 const getUsuarios = async(req, resp = response) => {
     try {
+        const limInf = Number(req.query.desde) || 0;
+        const cantidadDoc = 5;
+        console.log(limInf);
 
         // let usuarioList = await Usuario.find(); m eregresa todos los campos de la bd
-        let usuarioList = await Usuario.find({}, 'nombre email role google');
+        /*  const usuarioList = await Usuario.find({}, 'nombre email role google')
+             .skip(limInf).limit(cantidadDoc);
+
+         const totalDoc = await Usuario.count(); */
+
+        // Mas eficiente que el anterior 
+        const [usuarioList, totalDoc] = await Promise.all([
+            Usuario.find({}, 'nombre email role google img')
+            .skip(limInf).limit(cantidadDoc),
+            Usuario.count()
+        ]);
+
         resp.json({
             ok: true,
             msg: 'Consultando Usuarios!!',
-            usuarios: usuarioList
+            usuarios: usuarioList,
+            total: totalDoc
         });
     } catch (error) {
         console.log(error);

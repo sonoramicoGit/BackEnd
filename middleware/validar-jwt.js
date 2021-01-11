@@ -18,7 +18,7 @@ const validaJWT = (req, resp = response, next) => {
         console.log('uidValida', uid);
         //si yo quisiera agregar el Uid lo meto al request req.uid=uid  y usarlo mas adelante de mi flujoy 
         //si quiero presentarlo en la info de los usuarios
-
+        req.uid = uid;
         next();
     } catch (error) {
         return resp.status(401).json({

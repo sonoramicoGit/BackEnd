@@ -8,6 +8,7 @@ const { dbConecction } = require('./baseDatos/conexionDB');
 const cors = require('cors');
 
 
+
 // TODAS LAS VARIABLES DE ENTORNO DE NODE
 // console.log(process.env);
 //EN PARTICULAR MI PORT 
@@ -25,10 +26,24 @@ servExpres.use(express.json());
 //conexion BD
 dbConecction();
 
-//rutas de la forma /api/usuarios   
+//RUTAS
+//DE USUARIOS    
 // use(url, controlador) el controlador lo definimos en el archivo especifico de rutas del usuario
 servExpres.use('/api/usuarios', require('./route/usuario/usuario'));
+// DE LOGIN
 servExpres.use('/api/login', require('./route/usuario/auth'));
+// DE HOSPITALES
+servExpres.use('/api/hospital', require('./route/hospital/hospital'));
+// DE MEDICOS
+servExpres.use('/api/medico', require('./route/medico/medico'));
+
+//DE BUSQUETA TOTAL
+servExpres.use('/api/busqueda', require('./route/utils/busqueda'));
+
+//DE upload
+servExpres.use('/api/upload', require('./route/utils/upload'));
+
+
 
 // iniciamos el servidor usamos variable de entorno
 servExpres.listen(process.env.PORT, () => {
