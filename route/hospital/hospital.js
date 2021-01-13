@@ -23,7 +23,9 @@ router.post('/', [
 
 // actualizar Hospital
 router.put('/:id', [
-
+        validaJWT,
+        check('nombre', 'El nombre del hospital es necesario').not().isEmpty(), //aqui validamos
+        validarCampos //debo llamar al final ela validcion del middleware
     ],
     actualizarHospital);
 

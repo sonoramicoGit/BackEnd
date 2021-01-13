@@ -106,7 +106,28 @@ const loginGoogleSignIn = async(req, resp = response) => {
 
 };
 
+const renovarToken = async(req, resp = response) => {
+    console.log('renovarToken------------->');
+    const uid = req.uid;
+    let token = '';
+    await generarJWT(uid)
+        .then(respuesta => {
+            this.token = respuesta;
+
+        });
+
+    // token = await generarJWT(uid);  la otra forma
+
+    resp.json({
+        ok: true,
+        token: this.token
+            // token:token  la otra forma
+
+    });
+};
+
 module.exports = {
     login,
-    loginGoogleSignIn
+    loginGoogleSignIn,
+    renovarToken
 };

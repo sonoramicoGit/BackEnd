@@ -1,5 +1,6 @@
 const { response } = require("express");
 const Hospital = require('../../model/hospital/hospital');
+const Usuario = require("../../model/usuario/usuario");
 
 const getHospitales = async(req, resp = response) => {
     try {
@@ -42,12 +43,35 @@ const crearHospital = async(req, resp = response) => {
 
 
 };
-const actualizarHospital = (req, resp = response) => {
+const actualizarHospital = async(req, resp = response) => {
     try {
+        const { nombre } = req.body;
+        const idHospital = req.params.id; //el id del hospital a modificar
+        const idUser = req.uid; //el id del usuario logeado
+        //   const { email, password, google, ...campos } = req.body; //quitamos los 3 campos del objeto campos
+        let campos;
+        campos = {
+            usuario: idUser,
+            nombre: nombre
+
+        };
+        console.log('miuid==', idHospital);
+        const hospitalBD = await Hospital.findById(idHospital);
+        if (!hospitalBD) {
+            return resp.status(400).json({
+                ok: false,
+                msg: `El hospital con el id=${idHospital} no existe`
+            });
+        }
+
+        //si no pongo el new: true me regresa el OBJETO  original sin la actualizacion
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(idHospital, campos, { new: true });
+        console.log('hospitalActualizado', hospitalActualizado);
+
 
         resp.json({
             ok: true,
-            msg: 'actualizarHospital'
+            hospital: hospitalActualizado
         });
     } catch (error) {
         console.log(error);
@@ -59,12 +83,24 @@ const actualizarHospital = (req, resp = response) => {
 
 
 };
-const borrarHospital = (req, resp = response) => {
+const borrarHospital = async(req, resp = response) => {
     try {
+        const idHospital = req.params.id; //el id del hospital a borrar
+        console.log('miuid==', idHospital);
+        const hospitalBD = await Hospital.findById(idHospital);
+        if (!hospitalBD) {
+            return resp.status(400).json({
+                ok: false,
+                msg: `El hospital con el id=${idHospital} no existe`
+            });
+        }
+        //borrar hospital en BD 
+        //recordar que lo importante de un usuario seria cambiar un campo activo= a false mas que borrarlo 
+        await Hospital.findByIdAndDelete(idHospital);
 
         resp.json({
             ok: true,
-            msg: 'borrarHospital'
+            msg: 'Hospital Eliminado!!'
         });
     } catch (error) {
         console.log(error);

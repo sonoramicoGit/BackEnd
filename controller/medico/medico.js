@@ -43,12 +43,36 @@ const crearMedico = async(req, resp = response) => {
     }
 
 };
-const actualizarMedico = (req, resp = response, next) => {
+const actualizarMedico = async(req, resp = response) => {
     try {
+
+        const { nombre, id_hospital } = req.body;
+        const idMedico = req.params.id; //el id del medico a modificar
+        const idUser = req.uid; //el id del usuario logeado
+        console.log({ idMedico, idUser });
+        let campos;
+        campos = {
+            nombre: nombre,
+            usuario: idUser,
+            hospital: id_hospital
+
+        };
+        //consultamos medico 
+        const medicoBD = await Medico.findById(idMedico);
+        if (!medicoBD) {
+            return resp.status(400).json({
+                ok: false,
+                msg: `El medico con el id=${idMedico} no existe`
+            });
+        }
+        //si no pongo el new: true me regresa el OBJETO  original sin la actualizacion
+        const medicoActualizado = await Medico.findByIdAndUpdate(idMedico, campos, { new: true });
+        console.log('medicoActualizado', medicoActualizado);
+
 
         resp.json({
             ok: true,
-            msg: 'actualizarMedico'
+            medico: medicoActualizado
         });
     } catch (error) {
         console.log(error);
@@ -57,15 +81,28 @@ const actualizarMedico = (req, resp = response, next) => {
             msg: 'Error inesperado..revisar logs'
         });
     }
-    next();
+
 
 };
-const borrarMedico = (req, resp = response, next) => {
+const borrarMedico = async(req, resp = response, next) => {
     try {
+
+        const idMedico = req.params.id; //el id del medico a borrar
+        console.log('miuid==', idMedico);
+        const medicoBD = await Medico.findById(idMedico);
+        if (!medicoBD) {
+            return resp.status(400).json({
+                ok: false,
+                msg: `El medico con el id=${idMedico} no existe`
+            });
+        }
+        //borrar medico en BD 
+        //recordar que lo importante de un usuario seria cambiar un campo activo= a false mas que borrarlo 
+        await Medico.findByIdAndDelete(idMedico);
 
         resp.json({
             ok: true,
-            msg: 'borrarMedico'
+            msg: 'Medico Eliminado!!'
         });
     } catch (error) {
         console.log(error);

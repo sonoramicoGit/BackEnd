@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const validaJWT = (req, resp = response, next) => {
     const token = req.header('x-token');
-    console.log('token::', token);
+    console.log('token enviado-->', token);
 
     if (!token) {
         return resp.status(401).json({
@@ -15,7 +15,7 @@ const validaJWT = (req, resp = response, next) => {
     //verificamos el token
     try {
         const { uid } = jwt.verify(token, process.env.TOKEN_KEY);
-        console.log('uidValida', uid);
+        console.log('uid Valida token-->', uid);
         //si yo quisiera agregar el Uid lo meto al request req.uid=uid  y usarlo mas adelante de mi flujoy 
         //si quiero presentarlo en la info de los usuarios
         req.uid = uid;
