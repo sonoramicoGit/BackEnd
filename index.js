@@ -25,6 +25,8 @@ servExpres.use(express.json());
 
 //conexion BD
 dbConecction();
+//Directorio Publico donde guardo el html de la autenticacion por google
+servExpres.use(express.static('public'));
 
 //RUTAS
 //DE USUARIOS    
@@ -42,7 +44,6 @@ servExpres.use('/api/busqueda', require('./route/utils/busqueda'));
 
 //DE upload
 servExpres.use('/api/upload', require('./route/utils/upload'));
-
 
 
 // iniciamos el servidor usamos variable de entorno
